@@ -6,19 +6,17 @@ import java.time.Instant;
 @Entity
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String description;
-//    @Basic
     private Instant startTime;
-//    @Basic
     private Instant endTime;
     private int availablePlaces;
     private boolean repeating;
     private boolean registration;
     //TODO organizator
-    @OneToOne(targetEntity = Category.class)
+    @ManyToOne(targetEntity = Category.class)
     private Category category;
 //    private Location location;
 
