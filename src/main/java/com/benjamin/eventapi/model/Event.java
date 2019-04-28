@@ -9,6 +9,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Instant startTime;
     private Instant endTime;
@@ -18,7 +19,8 @@ public class Event {
     //TODO organizator
     @ManyToOne(targetEntity = Category.class)
     private Category category;
-//    private Location location;
+    @ManyToOne(targetEntity = Location.class)
+    private Location location;
 
     public Event() {}
 
@@ -88,5 +90,13 @@ public class Event {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
