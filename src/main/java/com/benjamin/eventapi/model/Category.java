@@ -15,6 +15,14 @@ public class Category {
     public Category() {
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Category(String name) {
         this.name = name;
     }

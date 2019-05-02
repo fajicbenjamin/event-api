@@ -1,10 +1,10 @@
 package com.benjamin.eventapi.seeder;
 
-import com.benjamin.eventapi.model.Account;
+import com.benjamin.eventapi.model.User;
 import com.benjamin.eventapi.model.Category;
 import com.benjamin.eventapi.model.Event;
 import com.benjamin.eventapi.model.Location;
-import com.benjamin.eventapi.repository.AccountRepository;
+import com.benjamin.eventapi.repository.UserRepository;
 import com.benjamin.eventapi.repository.CategoryRepository;
 import com.benjamin.eventapi.repository.EventRepository;
 import com.benjamin.eventapi.repository.LocationRepository;
@@ -19,15 +19,15 @@ import java.util.List;
 
 @Component
 public class DatabaseSeeder {
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
     private EventRepository eventRepository;
     private CategoryRepository categoryRepository;
     private LocationRepository locationRepository;
 
     @Autowired
-    public DatabaseSeeder(AccountRepository accountRepository, EventRepository eventRepository,
+    public DatabaseSeeder(UserRepository userRepository, EventRepository eventRepository,
                           CategoryRepository categoryRepository, LocationRepository locationRepository) {
-        this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
@@ -35,19 +35,19 @@ public class DatabaseSeeder {
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
-        seedAccountsTable(accountRepository);
+        seedUsersTable(userRepository);
         seedCategoriesTable(categoryRepository);
         seedLocationsTable(locationRepository);
         seedEventsTable(eventRepository);
     }
 
-    private void seedAccountsTable(AccountRepository accountRepository) {
-        Account account = new Account();
-        account.setUsername("admin");
-        account.setEmail("admin@admin.com");
-        account.setAdmin(true);
-        account.setPassword(new BCryptPasswordEncoder().encode("secret"));
-        accountRepository.save(account);
+    private void seedUsersTable(UserRepository userRepository) {
+        User user = new User();
+        user.setUsername("admin");
+        user.setEmail("admin@admin.com");
+        user.setAdmin(true);
+        user.setPassword(new BCryptPasswordEncoder().encode("secret"));
+        userRepository.save(user);
     }
 
     private void seedEventsTable(EventRepository eventRepository) {
@@ -56,7 +56,7 @@ public class DatabaseSeeder {
 
         Event event = new Event();
         event.setName("Testni event");
-        event.setStartTime(new Date().toInstant());
+        event.setStartTime(new Date().toInstant().plusSeconds(86400));
         event.setEndTime(new Date().toInstant());
         event.setAvailablePlaces(100);
         event.setDescription("Testni event koji je odseedan na samom startu apija");

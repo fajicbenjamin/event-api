@@ -3,7 +3,8 @@ package com.benjamin.eventapi.model;
 import javax.persistence.*;
 
 @Entity
-public class Account {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
