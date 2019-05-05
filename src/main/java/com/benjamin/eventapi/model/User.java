@@ -12,7 +12,6 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
     private String password;
     private boolean isAdmin = false;
 //    @OneToOne(targetEntity = Provider.class)
