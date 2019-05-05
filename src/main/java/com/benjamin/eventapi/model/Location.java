@@ -13,7 +13,7 @@ public class Location {
     private String region;
     private String city;
     private String address;
-    private String lattitude;
+    private String latitude;
     private String longitude;
 
     @OneToMany
@@ -67,12 +67,12 @@ public class Location {
         this.address = address;
     }
 
-    public String getLattitude() {
-        return lattitude;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setLattitude(String lattitude) {
-        this.lattitude = lattitude;
+    public void setLatitude(String lattitude) {
+        this.latitude = lattitude;
     }
 
     public String getLongitude() {

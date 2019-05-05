@@ -76,7 +76,7 @@ public class DatabaseSeeder {
         location.setAddress("Alipašina");
         location.setCity("Sarajevo");
         location.setCountry("Bosnia and Herzegovina");
-        location.setLattitude("43.8718421");
+        location.setLatitude("43.8718421");
         location.setLongitude("18.4094958,15");
         locationRepository.save(location);
     }
