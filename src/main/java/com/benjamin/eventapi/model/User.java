@@ -1,5 +1,7 @@
 package com.benjamin.eventapi.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,11 +14,9 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean isAdmin = false;
-//    @OneToOne(targetEntity = Provider.class)
-//    private Provider provider = null;
-
 
     public long getId() {
         return id;

@@ -1,13 +1,7 @@
 package com.benjamin.eventapi.seeder;
 
-import com.benjamin.eventapi.model.User;
-import com.benjamin.eventapi.model.Category;
-import com.benjamin.eventapi.model.Event;
-import com.benjamin.eventapi.model.Location;
-import com.benjamin.eventapi.repository.UserRepository;
-import com.benjamin.eventapi.repository.CategoryRepository;
-import com.benjamin.eventapi.repository.EventRepository;
-import com.benjamin.eventapi.repository.LocationRepository;
+import com.benjamin.eventapi.model.*;
+import com.benjamin.eventapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -23,14 +17,17 @@ public class DatabaseSeeder {
     private EventRepository eventRepository;
     private CategoryRepository categoryRepository;
     private LocationRepository locationRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     public DatabaseSeeder(UserRepository userRepository, EventRepository eventRepository,
-                          CategoryRepository categoryRepository, LocationRepository locationRepository) {
+                          CategoryRepository categoryRepository, LocationRepository locationRepository,
+                          MemberRepository memberRepository) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
+        this.memberRepository = memberRepository;
     }
 
     @EventListener
@@ -38,6 +35,7 @@ public class DatabaseSeeder {
         seedUsersTable(userRepository);
         seedCategoriesTable(categoryRepository);
         seedLocationsTable(locationRepository);
+        seedMembersTable(memberRepository);
         seedEventsTable(eventRepository);
     }
 
@@ -53,6 +51,7 @@ public class DatabaseSeeder {
     private void seedEventsTable(EventRepository eventRepository) {
         List<Category> categories = categoryRepository.findAll();
         List<Location> locations = locationRepository.findAll();
+        List<Member> members = memberRepository.findAll();
 
         Event event = new Event();
         event.setName("Testni event");
@@ -60,8 +59,10 @@ public class DatabaseSeeder {
         event.setEndTime(new Date().toInstant());
         event.setAvailablePlaces(100);
         event.setDescription("Testni event koji je odseedan na samom startu apija");
+        event.setRegistration(true);
         event.setCategory(categories.get(0));
         event.setLocation(locations.get(0));
+        event.getMemberList().add(members.get(0));
         eventRepository.save(event);
     }
 
@@ -79,5 +80,13 @@ public class DatabaseSeeder {
         location.setLatitude("43.8718421");
         location.setLongitude("18.4094958,15");
         locationRepository.save(location);
+    }
+
+    private void seedMembersTable(MemberRepository memberRepository) {
+        Member member = new Member();
+        member.setName("John Doe");
+        member.setEmail("johndoe@email.com");
+        member.setPassword(new BCryptPasswordEncoder().encode("secret"));
+        memberRepository.save(member);
     }
 }
