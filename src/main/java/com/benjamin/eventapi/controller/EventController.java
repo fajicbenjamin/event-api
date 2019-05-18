@@ -16,8 +16,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.CollectionTable;
 import java.io.File;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
 @RestController
 public class EventController {
@@ -104,6 +106,17 @@ public class EventController {
         eventRepository.deleteById(id);
     }
 
+    @GetMapping("/events/overview")
+    public Map dashboardOverview() {
+        List<Event> events = eventRepository.findAllWithStartTimeAfter(Instant.now());
+
+        Map map = new HashMap<String, String>();
+        map.put("incomingEvents", events.size());
+        map.put("nextEvent", events.get(0));
+
+        return Collections.synchronizedMap(map);
+    }
+
     @GetMapping("/events/{id}/remove-guest/{guest_id}")
     void removeGuest(@PathVariable Long id, Long guest_id) {
         Event event = eventRepository.findById(id)
@@ -126,7 +139,7 @@ public class EventController {
                 .orElseThrow(() -> new  ResourceNotFoundException("Member not found on :: " + guest_id));
 
         event.getMemberList().add(member);
-        event.setAvailablePlaces(event.getAvailablePlaces() - 1);
+        event.setAvailablePlaces(event.getAvailablePlaces() - 1 > 0 ? event.getAvailablePlaces() - 1 : 0);
         eventRepository.save(event);
     }
 
