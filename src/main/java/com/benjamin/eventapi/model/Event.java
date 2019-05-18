@@ -1,7 +1,6 @@
 package com.benjamin.eventapi.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -21,23 +20,12 @@ public class Event {
     private int availablePlaces;
     private boolean repeating;
     private boolean registration;
+    private String imagePath;
+
     @ManyToMany
     @JsonManagedReference
     private Set<Member> memberList = new HashSet<>();
 
-    @JsonProperty("category_id")
-    private void unpackCategory(Integer category_id) {
-        this.category = new Category();
-        category.setId(category_id);
-    }
-
-    @JsonProperty("location_id")
-    private void unpackLocation(Integer location_id) {
-        this.location = new Location();
-        location.setId(location_id);
-    }
-
-    //TODO organizator
     @ManyToOne(targetEntity = Category.class)
     private Category category;
     @ManyToOne(targetEntity = Location.class)
@@ -127,5 +115,13 @@ public class Event {
 
     public void setMemberList(Set<Member> memberList) {
         this.memberList = memberList;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
