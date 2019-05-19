@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
@@ -27,17 +26,5 @@ public class EventApiApplication implements WebMvcConfigurer{
 //            storageService.deleteAll();
             storageService.init();
         };
-    }
-
-    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
-            "classpath:/META-INF/resources/", "classpath:/resources/",
-            "classpath:/static/", "classpath:/public/" };
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if (!registry.hasMappingForPattern("/**")) {
-            registry.addResourceHandler("/**").addResourceLocations(
-                    CLASSPATH_RESOURCE_LOCATIONS);
-        }
     }
 }

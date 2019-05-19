@@ -23,13 +23,18 @@ public class MemberController {
         return memberRepository.findAll();
     }
 
-    @PostMapping("/members")
-    Member newMember(@RequestBody Member newMember) {
-        if (newMember.getPassword() != null && !newMember.getPassword().equals("")) {
-            newMember.setPassword(bCryptPasswordEncoder.encode(newMember.getPassword()));
+    @RequestMapping(value = "/members", method = RequestMethod.POST)
+    String newMember(String name, String email, String password) {
+        Member newMember = new Member();
+        newMember.setName(name);
+        newMember.setEmail(email);
+        if (password != null && !password.equals("")) {
+            newMember.setPassword(bCryptPasswordEncoder.encode(password));
         }
 
-        return memberRepository.save(newMember);
+        Member member = memberRepository.save(newMember);
+
+        return member.getId() + "-" + member.getName() + "-" + bCryptPasswordEncoder.encode(member.getEmail());
     }
 
     @GetMapping("/members/{id}")
@@ -62,5 +67,20 @@ public class MemberController {
     @DeleteMapping("/members/{id}")
     void deleteMember(@PathVariable Long id) {
         memberRepository.deleteById(id);
+    }
+
+    @PostMapping("/members/login")
+    String login(String email, String password) {
+        Member member = memberRepository.findByEmail(email);
+
+        if (member == null) {
+            throw new  ResourceNotFoundException("Member with email " + email + " not found.");
+        }
+
+        if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
+            throw new IllegalStateException("Password is incorrect for that mail");
+        }
+
+        return member.getId() + "-" + member.getName() + "-" + bCryptPasswordEncoder.encode(member.getEmail());
     }
 }

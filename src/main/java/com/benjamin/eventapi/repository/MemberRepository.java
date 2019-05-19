@@ -6,4 +6,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "member", path = "members")
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    Member findByEmail(String email);
 }

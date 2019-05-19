@@ -12,11 +12,11 @@ import com.benjamin.eventapi.service.StorageProperties;
 import com.benjamin.eventapi.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.CollectionTable;
 import java.io.File;
 import java.time.Instant;
 import java.util.*;
@@ -25,16 +25,21 @@ import java.util.*;
 public class EventController {
     private EventRepository eventRepository;
     private MemberRepository memberRepository;
-    private final StorageService storageService;
-    private final CategoryRepository categoryRepository;
-    private final LocationRepository locationRepository;
+    private CategoryRepository categoryRepository;
+    private LocationRepository locationRepository;
 
-    @Autowired StorageProperties storageProperties;
+    @Autowired
+    StorageProperties storageProperties;
+
+    @Autowired
+    StorageService storageService;
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public EventController(EventRepository eventRepository, MemberRepository memberRepository, StorageService storageService, CategoryRepository categoryRepository, LocationRepository locationRepository) {
         this.eventRepository = eventRepository;
         this.memberRepository = memberRepository;
-        this.storageService = storageService;
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
     }
@@ -107,7 +112,7 @@ public class EventController {
     }
 
     @GetMapping("/events/overview")
-    public Map dashboardOverview() {
+    Map dashboardOverview() {
         List<Event> events = eventRepository.findAllWithStartTimeAfter(Instant.now());
 
         Map map = new HashMap<String, String>();
@@ -117,29 +122,39 @@ public class EventController {
         return Collections.synchronizedMap(map);
     }
 
-    @GetMapping("/events/{id}/remove-guest/{guest_id}")
-    void removeGuest(@PathVariable Long id, Long guest_id) {
+    @PostMapping("/events/{id}/add-guest")
+    void makeReservation(String token, @PathVariable Long id) {
+        long memberId = Long.parseLong(token.substring(0, token.indexOf("-")));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new  ResourceNotFoundException("Member not found on :: " + memberId));
+
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new  ResourceNotFoundException("Event not found on :: " + id));
 
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new  ResourceNotFoundException("Member not found on :: " + guest_id));
 
-        event.getMemberList().remove(member);
-        event.setAvailablePlaces(event.getAvailablePlaces() + 1);
-        eventRepository.save(event);
+        if (!bCryptPasswordEncoder.matches(member.getEmail(), token.substring(token.lastIndexOf("-") + 1))) {
+            throw new IllegalStateException("Token is not matching");
+        }
+
+        if (event.getAvailablePlaces() > 0) {
+            event.getMemberList().add(member);
+            event.setAvailablePlaces(event.getAvailablePlaces() - 1);
+            eventRepository.save(event);
+        }
     }
 
-    @PostMapping("/events/{id}/add-guest/{guest_id}")
-    void addGuest(@PathVariable Long id, Long guest_id) {
+    @GetMapping("/events/{id}/remove-guest/{guest_id}")
+    void removeGuest(@PathVariable Long id, @PathVariable Long guest_id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new  ResourceNotFoundException("Event not found on :: " + id));
 
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findById(guest_id)
                 .orElseThrow(() -> new  ResourceNotFoundException("Member not found on :: " + guest_id));
 
-        event.getMemberList().add(member);
-        event.setAvailablePlaces(event.getAvailablePlaces() - 1 > 0 ? event.getAvailablePlaces() - 1 : 0);
+        if (event.getMemberList().remove(member)) {
+            event.setAvailablePlaces(event.getAvailablePlaces() + 1);
+        }
         eventRepository.save(event);
     }
 
