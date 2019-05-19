@@ -160,7 +160,7 @@ public class EventController {
 
     private void uploadImage(Event event, MultipartFile file) {
         if (file != null) {
-            String eventImagePath = "images/events/" + event.getId() + "/" + file.getOriginalFilename();
+            String eventImagePath = "events/" + event.getId() + "/" + file.getOriginalFilename();
             File eventImage = new File(storageProperties.getLocation() + "/" + eventImagePath);
             if (!eventImage.exists()) {
                 eventImage.mkdirs();
@@ -168,7 +168,7 @@ public class EventController {
             String filename = StringUtils.cleanPath(eventImagePath);
             storageService.store(file, filename);
 
-            event.setImagePath(eventImagePath);
+            event.setImagePath(eventImage.getPath());
             eventRepository.save(event);
         }
     }

@@ -54,11 +54,12 @@ public class DatabaseSeeder {
         List<Member> members = memberRepository.findAll();
 
         Event event = new Event();
-        event.setName("Testni event");
+        event.setName("Technology conference");
         event.setStartTime(new Date().toInstant().plusSeconds(86400));
-        event.setEndTime(new Date().toInstant());
+        event.setEndTime(new Date().toInstant().plusSeconds(90000));
         event.setAvailablePlaces(100);
-        event.setDescription("Testni event koji je odseedan na samom startu apija");
+        event.setDescription("This is event that is seeded in database in the start of " +
+                "application. Comment out or remove seed listener if you don't want it to be seeded");
         event.setRegistration(true);
         event.setCategory(categories.get(0));
         event.setLocation(locations.get(0));
@@ -67,18 +68,18 @@ public class DatabaseSeeder {
     }
 
     private void seedCategoriesTable(CategoryRepository categoryRepository) {
-        Category category = new Category("Testna");
+        Category category = new Category("IT Conference");
         categoryRepository.save(category);
     }
 
     private void seedLocationsTable(LocationRepository locationRepository) {
         Location location = new Location();
-        location.setName("Zetra");
-        location.setAddress("Alipašina");
-        location.setCity("Sarajevo");
+        location.setName("Hotel Hills");
+        location.setAddress("Butmirska cesta 18");
+        location.setCity("Ilidža");
         location.setCountry("Bosnia and Herzegovina");
-        location.setLatitude("43.8718421");
-        location.setLongitude("18.4094958,15");
+        location.setLatitude("43.826574");
+        location.setLongitude("18.313539");
         locationRepository.save(location);
     }
 

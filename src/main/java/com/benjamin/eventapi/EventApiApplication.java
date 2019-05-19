@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
@@ -26,5 +27,12 @@ public class EventApiApplication implements WebMvcConfigurer{
 //            storageService.deleteAll();
             storageService.init();
         };
+    }
+
+    private final static String imagesPath = "file:///Users/benjaminfajic/IdeaProjects/event-api/images/";
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**").addResourceLocations(imagesPath);
     }
 }

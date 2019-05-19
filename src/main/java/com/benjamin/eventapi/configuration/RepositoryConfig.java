@@ -1,4 +1,4 @@
-package com.benjamin.eventapi.service;
+package com.benjamin.eventapi.configuration;
 
 import com.benjamin.eventapi.model.*;
 import org.springframework.context.annotation.Configuration;
