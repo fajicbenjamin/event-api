@@ -64,6 +64,8 @@ public class EventController {
 
         this.uploadImage(event, file);
 
+        eventRepository.save(event);
+
         return event;
     }
 
@@ -169,7 +171,6 @@ public class EventController {
             storageService.store(file, filename);
 
             event.setImagePath(eventImage.getPath());
-            eventRepository.save(event);
         }
     }
 }
